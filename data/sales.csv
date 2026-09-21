@@ -1,0 +1,6 @@
+Order_ID,Product_Name,Category,Price,Quantity,Date
+101,Phone,Electronics,20000,2,2026-03-01
+102,Shoes,Fashion,3000,1,2026-03-02
+103,Laptop,Electronics,50000,1,2026-03-03
+104,T-Shirt,Fashion,1000,3,2026-03-04
+105,Headphones,Electronics,2000,2,2026-03-05

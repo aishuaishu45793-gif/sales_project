@@ -1,0 +1,63 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import os
+
+def analyze_data(df):
+    print("\n" + "=" * 50)
+    print("STEP 4 - DATA ANALYSIS REPORT")
+    print("=" * 50)
+    total_revenue = df["Total_Sales"].sum()
+    avg_order = np.mean(df["Total_Sales"])
+    total_orders = len(df)
+    top_product = df.groupby("Product_Name")["Total_Sales"].sum().idxmax()
+    top_category = df.groupby("Category")["Total_Sales"].sum().idxmax()
+    print(f"Total Revenue       : Rs. {total_revenue:,.2f}")
+    print(f"Total Orders        : {total_orders}")
+    print(f"Average Order Value : Rs. {avg_order:,.2f}")
+    print(f"Top Selling Product : {top_product}")
+    print(f"Top Category        : {top_category}")
+    print("\n--- Category Wise Sales ---")
+    category_sales = df.groupby("Category")["Total_Sales"].sum().reset_index()
+    print(category_sales)
+    print("\n--- Top Products ---")
+    top_products = df.groupby("Product_Name")["Total_Sales"].sum().sort_values(ascending=False)
+    print(top_products)
+    print("\n--- Monthly Sales ---")
+    monthly_sales = df.groupby("Month")["Total_Sales"].sum().reset_index()
+    print(monthly_sales)
+    return category_sales, top_products, monthly_sales
+
+def generate_report(df):
+    os.makedirs("reports", exist_ok=True)
+    df.to_csv("reports/output.csv", index=False)
+    print("\n" + "=" * 50)
+    print("STEP 5 - REPORT GENERATED")
+    print("=" * 50)
+    print("Report saved to reports/output.csv")
+
+def plot_graph(category_sales, top_products, monthly_sales):
+    print("\n" + "=" * 50)
+    print("STEP 6 - GENERATING GRAPHS")
+    print("=" * 50)
+    fig, axes = plt.subplots(1, 3, figsize=(18, 5))
+    fig.suptitle("Sales Analytics Dashboard", fontsize=16)
+    axes[0].bar(category_sales["Category"], category_sales["Total_Sales"], color=["steelblue","orange"])
+    axes[0].set_title("Category Wise Sales")
+    axes[0].set_xlabel("Category")
+    axes[0].set_ylabel("Total Sales (Rs.)")
+    top_products.plot(kind="bar", ax=axes[1], color="orange")
+    axes[1].set_title("Top Products")
+    axes[1].set_xlabel("Product")
+    axes[1].set_ylabel("Total Sales (Rs.)")
+    axes[1].tick_params(axis="x", rotation=45)
+    axes[2].plot(monthly_sales["Month"], monthly_sales["Total_Sales"], marker="o", color="green")
+    axes[2].set_title("Monthly Sales Trend")
+    axes[2].set_xlabel("Month")
+    axes[2].set_ylabel("Total Sales (Rs.)")
+    axes[2].tick_params(axis="x", rotation=45)
+    plt.tight_layout()
+    os.makedirs("reports", exist_ok=True)
+    plt.savefig("reports/sales_graph.png")
+    print("Graph saved!")
+    plt.show()
